@@ -135,6 +135,32 @@ collections:
         label: Video (YouTube bağlantısı)
         widget: string
         required: false
+      # Topic ids come from src/data/konular.json: a new topic must be added in both places.
+      # https://decapcms.org/docs/widgets/#select
+      - name: topics
+        label: Konular
+        widget: select
+        multiple: true
+        required: false
+        hint: Bu içerik hangi konulara giriyor? Okur konu sayfalarında aynı konudaki yazı, konuşma ve kitapları bir arada görür.
+        options:
+          - { label: "Fıkıh ve Hukuk", value: fikih }
+          - { label: "Siyer", value: siyer }
+          - { label: "Kur'an ve Meâl", value: kuran }
+          - { label: "Aile ve Kadın", value: aile }
+          - { label: "İktisat ve Helal Kazanç", value: iktisat }
+          - { label: "Siyaset ve Hilafet", value: siyaset }
+          - { label: "Davet ve Eğitim", value: davet }
+          - { label: "Şahsiyetler", value: sahsiyetler }
+          - { label: "Dil ve Yazarlık", value: dil }
+      # https://decapcms.org/docs/widgets/#list
+      - name: quotes
+        label: Öne çıkan cümleler
+        label_singular: Cümle
+        widget: list
+        required: false
+        hint: Uzun yazılarda metnin içinde büyük harflerle gösterilecek cümleler (en fazla 3). Cümleyi metinden olduğu gibi kopyalayıp yapıştırın; metinde harfi harfine bulunmayan cümle gösterilmez.
+        field: { name: quote, label: Cümle, widget: text }
       - name: draft
         label: Taslak
         widget: boolean
@@ -190,6 +216,24 @@ collections:
         hint: Kitabı tanıtan yazı varsa buradan seçin. Kitap sayfasında yazıya bağlantı görünür.
       - { name: pdf, label: PDF dosyası, widget: file, required: false, hint: Kitabın PDF dosyası varsa okuyucular indirebilir. }
       - { name: epub, label: EPUB dosyası (e-kitap), widget: file, required: false, hint: Kitabın EPUB dosyası varsa okuyucular indirebilir. }
+      # Topic ids come from src/data/konular.json: a new topic must be added in both places.
+      # https://decapcms.org/docs/widgets/#select
+      - name: topics
+        label: Konular
+        widget: select
+        multiple: true
+        required: false
+        hint: Bu içerik hangi konulara giriyor? Okur konu sayfalarında aynı konudaki yazı, konuşma ve kitapları bir arada görür.
+        options:
+          - { label: "Fıkıh ve Hukuk", value: fikih }
+          - { label: "Siyer", value: siyer }
+          - { label: "Kur'an ve Meâl", value: kuran }
+          - { label: "Aile ve Kadın", value: aile }
+          - { label: "İktisat ve Helal Kazanç", value: iktisat }
+          - { label: "Siyaset ve Hilafet", value: siyaset }
+          - { label: "Davet ve Eğitim", value: davet }
+          - { label: "Şahsiyetler", value: sahsiyetler }
+          - { label: "Dil ve Yazarlık", value: dil }
       - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
 
   - name: konusmalar
@@ -233,6 +277,32 @@ collections:
         fields:
           - { name: label, label: Dosya adı (okurun göreceği), widget: string }
           - { name: file, label: Dosya, widget: file }
+      # Topic ids come from src/data/konular.json: a new topic must be added in both places.
+      # https://decapcms.org/docs/widgets/#select
+      - name: topics
+        label: Konular
+        widget: select
+        multiple: true
+        required: false
+        hint: Bu içerik hangi konulara giriyor? Okur konu sayfalarında aynı konudaki yazı, konuşma ve kitapları bir arada görür.
+        options:
+          - { label: "Fıkıh ve Hukuk", value: fikih }
+          - { label: "Siyer", value: siyer }
+          - { label: "Kur'an ve Meâl", value: kuran }
+          - { label: "Aile ve Kadın", value: aile }
+          - { label: "İktisat ve Helal Kazanç", value: iktisat }
+          - { label: "Siyaset ve Hilafet", value: siyaset }
+          - { label: "Davet ve Eğitim", value: davet }
+          - { label: "Şahsiyetler", value: sahsiyetler }
+          - { label: "Dil ve Yazarlık", value: dil }
+      # https://decapcms.org/docs/widgets/#list
+      - name: quotes
+        label: Öne çıkan cümleler
+        label_singular: Cümle
+        widget: list
+        required: false
+        hint: Uzun yazılarda metnin içinde büyük harflerle gösterilecek cümleler (en fazla 3). Cümleyi metinden olduğu gibi kopyalayıp yapıştırın; metinde harfi harfine bulunmayan cümle gösterilmez.
+        field: { name: quote, label: Cümle, widget: text }
       - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
 
   - name: sayfalar
