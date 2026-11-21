@@ -153,6 +153,14 @@ collections:
     preview_path: 'kitaplar/{{slug}}/'
     fields:
       - { name: title, label: Kitap adı, widget: string }
+      - name: kind
+        label: Tür
+        widget: select
+        default: telif
+        options:
+          - { label: Telif eser (kendi yazdığı), value: telif }
+          - { label: Tercüme (çevirdiği), value: tercume }
+        hint: Kitaplar sayfasındaki süzme düğmeleri buna göre çalışır.
       - { name: year, label: Yayın yılı, widget: number, value_type: int, required: false }
       - { name: publisher, label: Yayınevi, widget: string, required: false }
       - { name: cover, label: Kapak, widget: image, required: false }
