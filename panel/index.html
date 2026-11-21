@@ -5,14 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Yönetim Paneli | Mehmet Çelen</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="stylesheet" href="/admin/panel.css" />
+    <style>
+      #giris { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #f6f8f7; }
+      @media (prefers-color-scheme: dark) { #giris { background: #1f2629; } }
+    </style>
   </head>
   <body>
-    <!-- Sveltia CMS. The docs ask for this exact form: no version in the URL, no type="module".
-         https://sveltiacms.app/en/docs/start#installing-with-a-cdn
-         Trial page for the simple login. Its config.yml is made at build time by src/pages/panel/config.yml.ts. -->
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
-    <!-- Welcome strip and small look changes: panel.css and panel.js, next to this file. -->
-    <script src="/admin/panel.js"></script>
+    <!-- Simple login, shown inside this page (no new window). Its config.yml is made at build time by
+         src/pages/panel/config.yml.ts. The login form itself is served by our login Worker
+         (workers/cms-login) in a frame; when the editor signs in, the Worker's page hands this page a
+         session, we store it where Sveltia CMS keeps its signed-in user, and only then load the panel,
+         which signs in by itself with that session. -->
+    <script>
+      (function () {
+        // Same address as LOGIN_WORKER in src/pages/panel/config.yml.ts.
+        var LOGIN = 'https://mehmetcelen-cms-login.corporate-translator.workers.dev';
+        var KEY = 'sveltia-cms.user';
+
+        function hasSession() {
+          try { var user = JSON.parse(localStorage.getItem(KEY) || 'null'); return !!(user && user.token); } catch (e) { return false; }
+        }
+        function add(src) {
+          return new Promise(function (resolve) {
+            var script = document.createElement('script');
+            script.src = src; script.onload = resolve;
+            document.body.appendChild(script);
+          });
+        }
+        function startPanel() {
+          // Sveltia CMS. The docs ask for this exact address: no version in the URL, no type="module".
+          // https://sveltiacms.app/en/docs/start#installing-with-a-cdn
+          // The script is added after the page has loaded, so the panel is started by hand.
+          // https://sveltiacms.app/en/docs/api/initialization
+          window.CMS_MANUAL_INIT = true;
+          add('https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js').then(function () {
+            window.CMS.init();
+            // Welcome strip and small look changes: panel.css and panel.js.
+            add('/admin/panel.js');
+          });
+        }
+
+        if (hasSession()) { startPanel(); return; }
+
+        var frame = document.createElement('iframe');
+        frame.id = 'giris';
+        frame.title = 'Giriş';
+        frame.src = LOGIN + '/auth?provider=github&site_id=' + encodeURIComponent(location.hostname) + '&embed=1';
+        document.body.appendChild(frame);
+        window.addEventListener('message', function (event) {
+          // Only the login Worker's own page may hand over a session.
+          if (event.origin !== LOGIN || !event.data || event.data.type !== 'mc-login' || typeof event.data.token !== 'string') return;
+          try { localStorage.setItem(KEY, JSON.stringify({ backendName: 'github', token: event.data.token })); } catch (e) {}
+          try { sessionStorage.setItem('mc-login-at', String(Date.now())); } catch (e) {}
+          frame.remove();
+          startPanel();
+        });
+      })();
+    </script>
   </body>
 </html>

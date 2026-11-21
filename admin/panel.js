@@ -26,6 +26,8 @@
     }
   }
 
+  var leaving = false;
+
   function update() {
     var main = document.querySelector('.app-shell .main');
     var signedIn = main && main.querySelector('.toolbar-wrapper');
@@ -36,12 +38,18 @@
     strip.querySelector('[data-ad]').textContent = name ? 'Hoş geldin, ' + name + '!' : 'Hoş geldin!';
     strip.hidden = !signedIn || editing;
 
-    // With the simple login the editors never see GitHub, so the sign-in button should not name it.
-    if (!signedIn && location.pathname.indexOf('/panel') === 0) {
-      document.querySelectorAll('button').forEach(function (button) {
-        var label = button.querySelector('.label') || button;
-        if (/GitHub/.test(label.textContent || '') && !label.querySelector('button')) label.textContent = 'Giriş yap';
-      });
+    // Simple login (/panel): the editors never see GitHub. When the session has ended or the editor
+    // signed out, Sveltia empties its stored user and shows its own sign-in button; we show our own
+    // login again instead. While Sveltia is still signing in, the stored session is there: do nothing.
+    if (!signedIn && location.pathname.indexOf('/panel') === 0 && !leaving) {
+      var button = Array.prototype.find.call(document.querySelectorAll('button'), function (b) { return /GitHub/.test(b.textContent || ''); });
+      var session = false;
+      try { session = !!(JSON.parse(localStorage.getItem('sveltia-cms.user') || 'null') || {}).token; } catch (e) {}
+      // Right after a sign-in a missing session means the panel refused it: stay, so its error can be read
+      // (otherwise the page would go round in circles).
+      var justSignedIn = false;
+      try { justSignedIn = Date.now() - Number(sessionStorage.getItem('mc-login-at') || 0) < 20000; } catch (e) {}
+      if (button && !session && !justSignedIn) { leaving = true; location.reload(); }
     }
 
     document.querySelectorAll('.infobar').forEach(function (bar) {
