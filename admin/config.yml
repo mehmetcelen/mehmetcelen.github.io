@@ -160,10 +160,11 @@ collections:
         widget: list
         required: false
         summary: '{{label}}'
-        hint: Kitabın satıldığı veya tanıtıldığı sayfalar.
+        hint: Kitabın satıldığı sayfalar. Kitap sayfasında ve tanıtım yazısının altında kutu olarak görünür.
         fields:
-          - { name: label, label: Yazı, widget: string }
+          - { name: label, label: Mağaza adı, widget: string, hint: 'Örnek: Ravza Kitap' }
           - { name: url, label: Adres, widget: string }
+          - { name: image, label: Mağaza sayfasının görüntüsü, widget: image, required: false, hint: Kare bir ekran görüntüsü en iyisidir. Boş kalabilir. }
       # https://sveltiacms.app/en/docs/fields/relation
       - name: intro
         label: Tanıtım yazısı
