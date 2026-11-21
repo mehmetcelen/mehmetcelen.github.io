@@ -157,6 +157,7 @@ collections:
       - { name: publisher, label: Yayınevi, widget: string, required: false }
       - { name: cover, label: Kapak, widget: image, required: false }
       - { name: cover_alt, label: Kapak açıklaması, widget: string, required: false }
+      - { name: cover_source, label: Kapak kaynağı, widget: string, required: false, hint: "Kapak yüklemediyseniz, kapak görseli bu adresten kendiliğinden alınır. Boş bırakabilirsiniz." }
       - { name: body, label: Tanıtım, widget: richtext, modes: [rich_text, raw], required: false }
       - name: links
         label: Bağlantılar
