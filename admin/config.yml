@@ -8,10 +8,13 @@ backend:
   name: github
   repo: mehmetcelen/mehmetcelen-source
   branch: main
-  # Sign-in with GitHub goes through our own small login Worker (code and notes: workers/cms-auth/).
-  # https://github.com/sveltia/sveltia-cms-auth
-  base_url: https://mehmetcelen-cms-auth.corporate-translator.workers.dev
-  # Only the "Sign in with GitHub" button, no access token field: simpler for the editors.
+  # Simple login: the editors choose their name and type a password, no GitHub account needed.
+  # Sign-in (base_url) and every GitHub call (api_root) go through our own login Worker, which holds
+  # the GitHub App's key. Code and notes: workers/cms-login/. The same address is in index.html.
+  # https://sveltiacms.app/en/docs/backends/github
+  base_url: https://mehmetcelen-cms-login.corporate-translator.workers.dev
+  api_root: https://mehmetcelen-cms-login.corporate-translator.workers.dev
+  # No access token field on Sveltia's own sign-in screen.
   auth_methods: [oauth]
   commit_messages:
     create: 'İçerik: yeni {{collection}} "{{slug}}"'

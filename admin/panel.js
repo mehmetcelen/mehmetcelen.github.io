@@ -38,10 +38,10 @@
     strip.querySelector('[data-ad]').textContent = name ? 'Hoş geldin, ' + name + '!' : 'Hoş geldin!';
     strip.hidden = !signedIn || editing;
 
-    // Simple login (/panel): the editors never see GitHub. When the session has ended or the editor
+    // Simple login (/admin): the editors never see GitHub. When the session has ended or the editor
     // signed out, Sveltia empties its stored user and shows its own sign-in button; we show our own
     // login again instead. While Sveltia is still signing in, the stored session is there: do nothing.
-    if (!signedIn && location.pathname.indexOf('/panel') === 0 && !leaving) {
+    if (!signedIn && location.pathname.indexOf('/admin-github') !== 0 && !leaving) {
       var button = Array.prototype.find.call(document.querySelectorAll('button'), function (b) { return /GitHub/.test(b.textContent || ''); });
       var session = false;
       try { session = !!(JSON.parse(localStorage.getItem('sveltia-cms.user') || 'null') || {}).token; } catch (e) {}
