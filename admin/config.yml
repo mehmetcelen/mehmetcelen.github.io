@@ -8,10 +8,11 @@ backend:
   name: github
   repo: mehmetcelen/mehmetcelen-source
   branch: main
-  # Until the login Worker exists (roadmap T12), only sign-in with a personal access token works.
-  # When the Worker is deployed: add `base_url: https://<worker address>` and change this to [oauth].
+  # Sign-in with GitHub goes through our own small login Worker (code and notes: workers/cms-auth/).
   # https://github.com/sveltia/sveltia-cms-auth
-  auth_methods: [token]
+  base_url: https://mehmetcelen-cms-auth.corporate-translator.workers.dev
+  # Only the "Sign in with GitHub" button, no access token field: simpler for the editors.
+  auth_methods: [oauth]
   commit_messages:
     create: 'İçerik: yeni {{collection}} "{{slug}}"'
     update: 'İçerik: {{collection}} "{{slug}}" güncellendi'
