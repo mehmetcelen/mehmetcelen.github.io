@@ -253,6 +253,34 @@ collections:
           - { name: empty_notice, label: Boş sayfa notu, widget: string }
           - { name: empty_notice_detail, label: Boş sayfa notu (ikinci satır), widget: string, required: false }
           - { name: footer, label: Sayfa altı yazısı, widget: string }
+      - name: manset
+        label: Ana sayfa duyuruları
+        file: src/data/manset.json
+        fields:
+          - name: items
+            label: Duyurular
+            label_singular: Duyuru
+            widget: list
+            summary: '{{title}}'
+            collapsed: true
+            hint: Ana sayfanın en üstünde sırayla dönen geniş bant. 3 veya 4 duyuru en iyisidir. Her duyuru 3 saniye görünür.
+            fields:
+              - { name: label, label: Küçük üst yazı, widget: string, required: false, hint: 'Örnek: Haberler, Yeni kitap' }
+              - { name: title, label: Başlık, widget: string }
+              - { name: text, label: Kısa açıklama, widget: text, required: false, hint: Bir iki cümle yeter. }
+              - { name: link, label: Tıklanınca açılacak adres, widget: string, required: false, hint: 'Site içi adres, örnek: /kitaplar/' }
+              - { name: button, label: Düğme yazısı, widget: string, required: false, hint: 'Boş kalırsa "Devamını oku" yazar.' }
+              - { name: image, label: Görsel, widget: image, required: false }
+              - name: color
+                label: Renk
+                widget: select
+                default: yesil
+                options:
+                  - { label: Yeşil, value: yesil }
+                  - { label: Mavi, value: mavi }
+                  - { label: Mor, value: mor }
+                  - { label: Kahverengi, value: kahve }
+                  - { label: Bordo, value: bordo }
       - name: menu
         label: Menü
         file: src/data/menu.json
