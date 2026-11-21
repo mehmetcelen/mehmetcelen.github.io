@@ -1,0 +1,318 @@
+# Sveltia CMS settings for the admin panel at /admin.
+# Every key here is checked against the official schema of the package:
+# https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+# Docs: https://sveltiacms.app/en/docs
+# The fields must stay in step with src/content.config.ts and docs/CONTENT_MODEL.md.
+
+backend:
+  name: github
+  repo: mehmetcelen/mehmetcelen-source
+  branch: main
+  # Sign-in with GitHub goes through our own small login Worker (code and notes: workers/cms-auth/).
+  # https://github.com/sveltia/sveltia-cms-auth
+  base_url: https://mehmetcelen-cms-login.corporate-translator.workers.dev
+  api_root: https://mehmetcelen-cms-login.corporate-translator.workers.dev
+  # Only the "Sign in with GitHub" button, no access token field: simpler for the editors.
+  auth_methods: [oauth]
+  commit_messages:
+    create: 'İçerik: yeni {{collection}} "{{slug}}"'
+    update: 'İçerik: {{collection}} "{{slug}}" güncellendi'
+    delete: 'İçerik: {{collection}} "{{slug}}" silindi'
+    uploadMedia: 'Dosya yüklendi: {{path}}'
+    deleteMedia: 'Dosya silindi: {{path}}'
+
+app_title: Mehmet Çelen Yönetim Paneli
+site_url: https://mehmetcelen.github.io
+publish_mode: simple
+
+# Uploaded files. https://sveltiacms.app/en/docs/media
+media_folder: public/uploads
+public_folder: /uploads
+media_libraries:
+  default:
+    config:
+      max_file_size: 20000000 # 20 MB, enough for PDFs and short audio
+      slugify_filename: true
+      transformations:
+        # Photos are made smaller in the browser before the upload.
+        # https://sveltiacms.app/en/docs/media#image-optimization
+        raster_image:
+          format: webp
+          quality: 85
+          width: 2000
+          height: 2000
+  stock_assets: false
+
+# Addresses without Turkish letters: "Büyük İmam" becomes "buyuk-imam".
+slug:
+  encoding: ascii
+  clean_accents: true
+  transliterate_locale: tr
+  maxlength: 80
+
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: yazilar
+    label: Yazılar
+    label_singular: Yazı
+    icon: article
+    description: Makaleler, haberler, eğitim yazıları. Yeni yazı eklemek için "Yeni" düğmesine basın.
+    folder: src/content/yazilar
+    extension: md
+    format: frontmatter
+    slug: '{{title}}'
+    preview_path: 'yazilar/{{slug}}/'
+    summary: '{{title}}'
+    table_columns: [title, category, date]
+    sortable_fields:
+      fields: [date, title]
+      default: { field: date, direction: descending }
+    view_filters:
+      - { label: Taslaklar, field: draft, pattern: true }
+    view_groups:
+      - { label: Kategori, field: category }
+    fields:
+      - { name: title, label: Başlık, widget: string }
+      - name: date
+        label: Tarih
+        widget: datetime
+        format: 'YYYY-MM-DDTHH:mm:ss'
+        default: '{{now}}'
+      - name: category
+        label: Kategori
+        widget: select
+        default: makaleler
+        options:
+          - { label: Makaleler, value: makaleler }
+          - { label: Eğitim, value: egitim }
+          - { label: Sorular, value: sorular }
+          - { label: Haberler, value: haberler }
+          - { label: Videolar, value: videolar }
+      - name: summary
+        label: Kısa özet
+        widget: text
+        required: false
+        hint: Ana sayfadaki kutuda ve paylaşımlarda görünür. Bir iki cümle yeterlidir.
+      - name: cover
+        label: Kapak görseli
+        widget: image
+        required: false
+      - name: cover_alt
+        label: Görsel açıklaması
+        widget: string
+        required: false
+        hint: Görseli göremeyenler için kısa bir açıklama.
+      - name: body
+        label: İçerik
+        widget: richtext
+        modes: [rich_text, raw]
+        editor_components: [image, table, hr]
+        hint: 'Dipnot eklemek için metne [^1] yazın, yazının en altına da yeni bir satıra [^1]: dipnot metni yazın.'
+      - name: attachments
+        label: Ekler (PDF)
+        label_singular: Ek
+        widget: list
+        required: false
+        summary: '{{label}}'
+        fields:
+          - { name: label, label: Dosya adı (okurun göreceği), widget: string }
+          - { name: file, label: Dosya, widget: file }
+      - name: audio
+        label: Ses kaydı (MP3 dosyası)
+        widget: file
+        required: false
+      - name: audio_embed
+        label: Ses kaydı (bağlantı)
+        widget: string
+        required: false
+        hint: SoundCloud veya archive.org adresi.
+      - name: video
+        label: Video (YouTube bağlantısı)
+        widget: string
+        required: false
+      - name: draft
+        label: Taslak
+        widget: boolean
+        default: false
+        required: false
+        hint: Açıkken yazı sitede görünmez.
+
+  - name: kitaplar
+    label: Kitaplar
+    label_singular: Kitap
+    icon: menu_book
+    folder: src/content/kitaplar
+    extension: md
+    format: frontmatter
+    slug: '{{title}}'
+    preview_path: 'kitaplar/{{slug}}/'
+    fields:
+      - { name: title, label: Kitap adı, widget: string }
+      - { name: year, label: Yayın yılı, widget: number, value_type: int, required: false }
+      - { name: publisher, label: Yayınevi, widget: string, required: false }
+      - { name: cover, label: Kapak, widget: image, required: false }
+      - { name: cover_alt, label: Kapak açıklaması, widget: string, required: false }
+      - { name: body, label: Tanıtım, widget: richtext, modes: [rich_text, raw], required: false }
+      - name: links
+        label: Bağlantılar
+        label_singular: Bağlantı
+        widget: list
+        required: false
+        summary: '{{label}}'
+        hint: Kitabın satıldığı sayfalar. Kitap sayfasında ve tanıtım yazısının altında kutu olarak görünür.
+        fields:
+          - { name: label, label: Mağaza adı, widget: string, hint: 'Örnek: Ravza Kitap' }
+          - { name: url, label: Adres, widget: string }
+          - { name: image, label: Mağaza sayfasının görüntüsü, widget: image, required: false, hint: Kare bir ekran görüntüsü en iyisidir. Boş kalabilir. }
+      # https://sveltiacms.app/en/docs/fields/relation
+      - name: intro
+        label: Tanıtım yazısı
+        widget: relation
+        collection: yazilar
+        value_field: '{{slug}}'
+        display_fields: ['{{title}}']
+        search_fields: [title]
+        required: false
+        hint: Kitabı tanıtan yazı varsa buradan seçin. Kitap sayfasında yazıya bağlantı görünür.
+      - { name: pdf, label: PDF dosyası, widget: file, required: false, hint: Kitabın PDF dosyası varsa okuyucular indirebilir. }
+      - { name: epub, label: EPUB dosyası (e-kitap), widget: file, required: false, hint: Kitabın EPUB dosyası varsa okuyucular indirebilir. }
+      - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
+
+  - name: konusmalar
+    label: Konuşmalar
+    label_singular: Konuşma
+    icon: record_voice_over
+    description: Konferans, seminer, panel, sempozyum ve röportajlar. Seçilen türe göre ilgili sayfada görünür.
+    folder: src/content/konusmalar
+    extension: md
+    format: frontmatter
+    slug: '{{title}}'
+    preview_path: 'konusma/{{slug}}/'
+    view_groups:
+      - { label: Tür, field: type }
+    fields:
+      - { name: title, label: Konuşma başlığı, widget: string }
+      - { name: date, label: Tarih, widget: datetime, type: date, format: 'YYYY-MM-DD' }
+      - name: type
+        label: Tür
+        widget: select
+        options:
+          - { label: Konferans, value: konferans }
+          - { label: Seminer, value: seminer }
+          - { label: Panel, value: panel }
+          - { label: Sempozyum (Ulusal), value: sempozyum-ulusal }
+          - { label: Sempozyum (Uluslararası), value: sempozyum-uluslararasi }
+          - { label: Röportaj, value: roportaj }
+      - { name: event, label: Etkinlik adı, widget: string, required: false }
+      - { name: place, label: 'Yer (kurum, şehir)', widget: string, required: false }
+      - { name: body, label: Özet, widget: richtext, modes: [rich_text, raw], required: false }
+      - { name: audio, label: Ses kaydı (MP3 dosyası), widget: file, required: false }
+      - { name: audio_embed, label: Ses kaydı (bağlantı), widget: string, required: false }
+      - { name: video, label: Video (YouTube bağlantısı), widget: string, required: false }
+      - name: attachments
+        label: Ekler
+        label_singular: Ek
+        widget: list
+        required: false
+        summary: '{{label}}'
+        fields:
+          - { name: label, label: Dosya adı (okurun göreceği), widget: string }
+          - { name: file, label: Dosya, widget: file }
+      - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
+
+  - name: sayfalar
+    label: Sayfalar
+    icon: description
+    description: Sabit sayfalar.
+    files:
+      - name: hakkinda
+        label: Hakkında
+        file: src/content/sayfalar/hakkinda.md
+        preview_path: hakkinda/
+        fields:
+          - { name: title, label: Başlık, widget: string }
+          - { name: body, label: İçerik, widget: richtext, modes: [rich_text, raw] }
+      - name: pdfler
+        label: "PDF'ler (sayfanın giriş yazısı)"
+        file: src/content/sayfalar/makaleler/pdfler.md
+        preview_path: makaleler/pdfler/
+        fields:
+          - { name: title, label: Başlık, widget: string }
+          - { name: body, label: İçerik, widget: richtext, modes: [rich_text, raw], required: false }
+
+  - name: ayarlar
+    label: Site ayarları
+    icon: settings
+    files:
+      - name: genel
+        label: Genel ayarlar
+        file: src/data/settings.json
+        fields:
+          - { name: title, label: Site başlığı, widget: string }
+          - { name: tagline, label: Alt başlık, widget: string }
+          - { name: empty_notice, label: Boş sayfa notu, widget: string }
+          - { name: empty_notice_detail, label: Boş sayfa notu (ikinci satır), widget: string, required: false }
+          - { name: footer, label: Sayfa altı yazısı, widget: string }
+      - name: manset
+        label: Ana sayfa duyuruları
+        file: src/data/manset.json
+        fields:
+          - name: items
+            label: Duyurular
+            label_singular: Duyuru
+            widget: list
+            summary: '{{title}}'
+            collapsed: true
+            hint: Ana sayfanın en üstünde sırayla dönen geniş bant. 3 veya 4 duyuru en iyisidir. Her duyuru 5 saniye görünür.
+            fields:
+              - { name: label, label: Küçük üst yazı, widget: string, required: false, hint: 'Örnek: Haberler, Yeni kitap' }
+              - { name: title, label: Başlık, widget: string }
+              - { name: text, label: Kısa açıklama, widget: text, required: false, hint: Bir iki cümle yeter. }
+              - { name: link, label: Tıklanınca açılacak adres, widget: string, required: false, hint: 'Site içi adres, örnek: /kitaplar/' }
+              - { name: button, label: Düğme yazısı, widget: string, required: false, hint: 'Boş kalırsa "Devamını oku" yazar.' }
+              - { name: image, label: Görsel, widget: image, required: false }
+              - name: color
+                label: Renk
+                widget: select
+                default: yesil
+                options:
+                  - { label: Yeşil, value: yesil }
+                  - { label: Mavi, value: mavi }
+                  - { label: Mor, value: mor }
+                  - { label: Kahverengi, value: kahve }
+                  - { label: Bordo, value: bordo }
+      - name: menu
+        label: Menü
+        file: src/data/menu.json
+        fields:
+          - name: items
+            label: Menü
+            label_singular: Menü başlığı
+            widget: list
+            summary: '{{label}}'
+            collapsed: true
+            fields:
+              - { name: label, label: Yazı, widget: string }
+              - { name: link, label: Adres, widget: string, hint: 'Site içi adres, örnek: /makaleler/' }
+              - name: children
+                label: Alt başlıklar
+                label_singular: Alt başlık
+                widget: list
+                required: false
+                summary: '{{label}}'
+                collapsed: true
+                fields:
+                  - { name: label, label: Yazı, widget: string }
+                  - { name: link, label: Adres, widget: string }
+                  - name: children
+                    label: Alt başlıklar
+                    label_singular: Alt başlık
+                    widget: list
+                    required: false
+                    summary: '{{label}}'
+                    collapsed: true
+                    fields:
+                      - { name: label, label: Yazı, widget: string }
+                      - { name: link, label: Adres, widget: string }

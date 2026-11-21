@@ -36,6 +36,14 @@
     strip.querySelector('[data-ad]').textContent = name ? 'Hoş geldin, ' + name + '!' : 'Hoş geldin!';
     strip.hidden = !signedIn || editing;
 
+    // With the simple login the editors never see GitHub, so the sign-in button should not name it.
+    if (!signedIn && location.pathname.indexOf('/panel') === 0) {
+      document.querySelectorAll('button').forEach(function (button) {
+        var label = button.querySelector('.label') || button;
+        if (/GitHub/.test(label.textContent || '') && !label.querySelector('button')) label.textContent = 'Giriş yap';
+      });
+    }
+
     document.querySelectorAll('.infobar').forEach(function (bar) {
       if (/mobil/i.test(bar.textContent || '')) bar.style.display = 'none';
     });
