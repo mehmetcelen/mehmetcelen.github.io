@@ -168,7 +168,7 @@
       stop.addEventListener('click', finish);
       window.addEventListener('pagehide', function () { synth.cancel(); });
     })();
-  </script></main><footer class="alt-bilgi"><div class="wrap"><span>© 2026</span><span class="alt-baglantilar"><a href="/hakkinda/">Hakkında</a><a href="/iletisim/">İletişim</a><a href="/gizlilik/">Gizlilik</a><a href="/rss.xml">RSS</a></span><a class="editor-giris" href="/admin/" rel="nofollow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"></rect><path d="M8.5 10.5V8a3.500 3.500 0 0 1 7 0v2.500"></path></svg>Editör girişi</a></div></footer><script>
+  </script></main><footer class="alt-bilgi"><div class="wrap alt-ust"><div class="alt-marka"><a class="alt-ad" href="/"><svg viewBox="0 0 100 100" aria-hidden="true"><path class="tuy-govde" d="M16 92C18 58 44 24 90 6 82 42 58 74 16 92Z"></path><path class="tuy-sap" d="M8 99C24 74 52 38 90 6"></path></svg><b>Mehmet Çelen</b></a><p>İslâm hukuku araştırmacısı, yazar ve mütercim</p></div><nav class="alt-menu" aria-label="Sitede neler var"><a href="/">Ana Sayfa</a><a href="/hakkinda/">Hakkında</a><a href="/makaleler/">Makaleler</a><a href="/kitaplar/">Kitaplar</a><a href="/egitim/">Eğitim</a><a href="/konusmalar/">Konuşmalar</a><a href="/videolar/">Videolar</a><a href="/haberler/">Haberler</a><a href="/iletisim/">İletişim</a></nav><div class="alt-dil" aria-label="Dil seçin"><a href="/yazilar/egitim-serisi-1-siyer-sorulari/" lang="tr" hreflang="tr" aria-current="true">Türkçe</a><a href="/en/yazilar/egitim-serisi-1-siyer-sorulari/" lang="en" hreflang="en">English</a><a href="/ar/yazilar/egitim-serisi-1-siyer-sorulari/" lang="ar" hreflang="ar">العربية</a></div></div><div class="wrap alt-alt"><span>© 2026</span><span class="alt-baglantilar"><a href="/gizlilik/">Gizlilik</a><a href="/rss.xml">RSS</a></span><a class="editor-giris" href="/admin/" rel="nofollow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"></rect><path d="M8.5 10.5V8a3.500 3.500 0 0 1 7 0v2.500"></path></svg>Editör girişi</a></div></footer><div class="okuma-cizgi" aria-hidden="true" hidden><i></i></div><button class="yukari" type="button" aria-label="Sayfanın başına dön" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></button><script>
       // Theme switch and the phone menu. Reading works without JavaScript.
       (function () {
         var root = document.documentElement, btn = document.getElementById('tema'), txt = document.getElementById('tema-yazi');
@@ -198,6 +198,54 @@
             b.setAttribute('aria-expanded', open ? 'true' : 'false');
           });
         });
+        // Back to top button and, on pages with a long text, the reading progress line.
+        var up = document.querySelector('.yukari'), line = document.querySelector('.okuma-cizgi'), text = document.querySelector('.makale .icerik');
+        var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        up.addEventListener('click', function () { scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }); });
+        if (text && text.offsetHeight > innerHeight) line.hidden = false; else line = null;
+        var wait = false;
+        function onScroll() {
+          wait = false;
+          // Hidden near the end of the page too, so it never covers the footer.
+          up.hidden = scrollY < 900 || innerHeight + scrollY > document.documentElement.scrollHeight - 140;
+          if (line) {
+            var r = text.getBoundingClientRect(), all = r.height - innerHeight * 0.6;
+            line.firstChild.style.transform = 'scaleX(' + Math.max(0, Math.min(1, -r.top / all)) + ')';
+            line.style.top = menu.getBoundingClientRect().bottom > 0 && getComputedStyle(menu).position === 'sticky' ? menu.offsetHeight + 'px' : '0';
+          }
+        }
+        addEventListener('scroll', function () { if (!wait) { wait = true; requestAnimationFrame(onScroll); } }, { passive: true });
+        onScroll();
+        // Footnotes: a tap on the small number shows the note in a bubble; a second tap follows the link.
+        var bubble;
+        function closeNote() { if (bubble) { bubble.remove(); bubble = null; } }
+        document.addEventListener('click', function (e) {
+          var a = e.target.closest && e.target.closest('a[data-footnote-ref]');
+          if (!a) { if (bubble && !bubble.contains(e.target)) closeNote(); return; }
+          if (bubble && bubble.dataset.for === a.id) { closeNote(); return; }
+          var note = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+          if (!note) return;
+          e.preventDefault(); closeNote();
+          bubble = document.createElement('span');
+          bubble.className = 'dipnot-balon'; bubble.dataset.for = a.id; bubble.setAttribute('role', 'note');
+          bubble.innerHTML = note.innerHTML;
+          bubble.querySelectorAll('a[data-footnote-backref]').forEach(function (x) { x.remove(); });
+          bubble.dir = getComputedStyle(note).direction;
+          document.body.appendChild(bubble);
+          var r = a.getBoundingClientRect(), w = Math.min(360, innerWidth - 24);
+          bubble.style.width = w + 'px';
+          bubble.style.left = Math.max(12, Math.min(innerWidth - w - 12, r.left + r.width / 2 - w / 2)) + scrollX + 'px';
+          var below = r.top < bubble.offsetHeight + 80;
+          bubble.style.top = (below ? r.bottom + 8 : r.top - bubble.offsetHeight - 8) + scrollY + 'px';
+        });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNote(); });
+        // Cards and section heads fade in the first time they scroll into view.
+        if ('IntersectionObserver' in window && !calm) {
+          var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('gorundu'); io.unobserve(x.target); } }); }, { rootMargin: '0px 0px -6% 0px' });
+          document.querySelectorAll('.kart,.bolum-bas,.tanit,.video-kutu,.pdf-kutu,.sayilar a,.ozgecmis .bolum').forEach(function (el) {
+            if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('gizli'); io.observe(el); }
+          });
+        }
         // The language list closes on a click elsewhere or on Escape.
         var dil = document.querySelector('details.dil');
         document.addEventListener('click', function (e) { if (dil.open && !dil.contains(e.target)) dil.open = false; });
