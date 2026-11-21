@@ -110,8 +110,9 @@ collections:
         label: İçerik
         widget: richtext
         modes: [rich_text, raw]
+        required: false
         editor_components: [image, table, hr]
-        hint: 'Dipnot eklemek için metne [^1] yazın, yazının en altına da yeni bir satıra [^1]: dipnot metni yazın.'
+        hint: 'Yalnızca video paylaşıyorsanız boş bırakabilirsiniz. Dipnot eklemek için metne [^1] yazın, yazının en altına da yeni bir satıra [^1]: dipnot metni yazın.'
       - name: attachments
         label: Ekler (PDF)
         label_singular: Ek
@@ -233,6 +234,19 @@ collections:
         label: Hakkında
         file: src/content/sayfalar/hakkinda.md
         preview_path: hakkinda/
+        fields:
+          - { name: title, label: Başlık, widget: string }
+          - { name: cover, label: Fotoğraf, widget: image, required: false, hint: "Başlığın sağında, yuvarlak köşeli bir çerçevede görünür." }
+          - { name: cover_alt, label: Fotoğrafın açıklaması, widget: string, required: false }
+          - name: body
+            label: İçerik
+            widget: richtext
+            modes: [rich_text, raw]
+            hint: "Yıl ile başlayan liste satırları (örnek: 1983 yılında...) kendiliğinden zaman çizelgesi olur. '1- ', '2- ' ile başlayan satırlar numaralı liste olur."
+      - name: gizlilik
+        label: Gizlilik
+        file: src/content/sayfalar/gizlilik.md
+        preview_path: gizlilik/
         fields:
           - { name: title, label: Başlık, widget: string }
           - { name: body, label: İçerik, widget: richtext, modes: [rich_text, raw] }
