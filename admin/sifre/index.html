@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="/admin/sayfa.css" />
+<title>Şifrem | Yönetim Paneli</title>
+</head>
+<body>
+<!-- Password page of the admin panel (registered in panel-kayit.js). The password goes straight to
+     our login Worker (workers/cms-login, POST /api/sifre), which stores only its hash. -->
+<main>
+  <h1>Şifrem</h1>
+  <p class="alt">Şifrenizi buradan kendiniz değiştirebilirsiniz. En az 10 karakter olsun; art arda yazılmış birkaç kelime hem güçlüdür hem akılda kalır.</p>
+  <div id="kapali" class="not uyari" hidden>Bu sayfa, panele yedek kapıdan (GitHub ile) girildiğinde çalışmaz.</div>
+
+  <form class="kart" id="degistir" autocomplete="off">
+    <label for="eski">Şimdiki şifrem</label>
+    <input id="eski" type="password" autocomplete="current-password" required />
+    <label for="yeni">Yeni şifrem</label>
+    <input id="yeni" type="password" autocomplete="new-password" minlength="10" maxlength="200" required />
+    <label for="yeni2">Yeni şifrem (bir kez daha)</label>
+    <input id="yeni2" type="password" autocomplete="new-password" minlength="10" maxlength="200" required />
+    <p style="margin-top:1rem"><button class="ana" type="submit">Şifremi değiştir</button></p>
+    <div id="sonuc" role="status"></div>
+  </form>
+
+  <section id="yonetici" hidden>
+    <h2>Birine geçici şifre ver</h2>
+    <p class="alt">Yalnızca site yöneticisi görür. Şifresini unutan kişiye geçici bir şifre verin; o kişi giriş yapınca bu sayfadan kendi şifresini belirler. Kişinin açık oturumları kapanır.</p>
+    <form class="kart" id="sifirla" autocomplete="off">
+      <label for="kim">Kimin şifresi?</label>
+      <select id="kim" required></select>
+      <label for="gecici">Geçici şifre</label>
+      <input id="gecici" type="text" autocomplete="off" minlength="10" maxlength="200" required />
+      <label for="benim">Kendi şifreniz (onay için)</label>
+      <input id="benim" type="password" autocomplete="current-password" required />
+      <p style="margin-top:1rem"><button class="ana" type="submit">Geçici şifreyi kaydet</button></p>
+      <div id="sonuc2" role="status"></div>
+    </form>
+  </section>
+</main>
+<script src="/admin/sayfa.js"></script>
+<script>
+(function () {
+  var MESSAGES = {
+    wrong: 'Şimdiki şifre yanlış.',
+    short: 'Yeni şifre en az 10 karakter olmalı.',
+    locked: 'Çok fazla yanlış deneme oldu. 15 dakika sonra tekrar deneyin.',
+    session: 'Oturumunuzun süresi dolmuş. Sayfayı yenileyip yeniden giriş yapın.',
+    forbidden: 'Bu işlem için yetkiniz yok.',
+    missing: 'Eksik bilgi var.',
+    yok: 'Bu özellik henüz açılmadı. Agah’a haber verin.',
+  };
+  function say(el, ok, text) { el.innerHTML = '<p class="not ' + (ok ? 'iyi' : 'uyari') + '">' + mc.esc(text) + '</p>'; }
+  function call(path, body) {
+    return fetch(mc.LOGIN + path, { method: body ? 'POST' : 'GET', headers: Object.assign({ Authorization: 'token ' + (mc.user().token || '') }, body ? { 'Content-Type': 'application/json' } : {}), body: body ? JSON.stringify(body) : undefined, cache: 'no-store' })
+      .then(function (r) { if (r.status === 404) return { error: 'yok' }; return r.json().catch(function () { return { error: 'other' }; }); })
+      .catch(function () { return { error: 'other' }; });
+  }
+  if (mc.direct) { document.getElementById('kapali').hidden = false; document.getElementById('degistir').hidden = true; return; }
+
+  var form = document.getElementById('degistir'), out = document.getElementById('sonuc');
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var next = form.yeni.value;
+    if (next !== form.yeni2.value) { say(out, false, 'İki yeni şifre aynı değil.'); return; }
+    if (next.length < 10) { say(out, false, MESSAGES.short); return; }
+    form.querySelector('button').disabled = true;
+    call('/api/sifre', { current: form.eski.value, next: next }).then(function (r) {
+      form.querySelector('button').disabled = false;
+      if (!r.ok) { say(out, false, MESSAGES[r.error] || 'Bir sorun oldu. Biraz sonra tekrar deneyin.'); return; }
+      // Stay signed in on this device with the fresh session; other devices are signed out.
+      try { var u = mc.user(); u.token = r.token; localStorage.setItem('sveltia-cms.user', JSON.stringify(u)); } catch (e) {}
+      form.reset();
+      say(out, true, 'Şifreniz değişti. Bundan sonra yeni şifrenizle giriş yaparsınız. Başka cihazlardaki oturumlarınız kapandı.');
+    });
+  });
+
+  call('/api/kullanicilar').then(function (r) {
+    if (!r.users) return;
+    document.getElementById('yonetici').hidden = false;
+    var me = mc.user().login, select = document.getElementById('kim');
+    r.users.filter(function (u) { return u.id !== me; }).forEach(function (u) { var o = document.createElement('option'); o.value = u.id; o.textContent = u.name; select.appendChild(o); });
+    var f2 = document.getElementById('sifirla'), out2 = document.getElementById('sonuc2');
+    f2.addEventListener('submit', function (event) {
+      event.preventDefault();
+      f2.querySelector('button').disabled = true;
+      call('/api/sifre-sifirla', { current: f2.benim.value, user: select.value, next: f2.gecici.value }).then(function (res) {
+        f2.querySelector('button').disabled = false;
+        if (!res.ok) { say(out2, false, MESSAGES[res.error] || 'Bir sorun oldu. Biraz sonra tekrar deneyin.'); return; }
+        var who = select.options[select.selectedIndex].textContent;
+        f2.reset();
+        say(out2, true, who + ' için geçici şifre kaydedildi. Şifreyi kendisine güvenli bir yoldan iletin ve girişten sonra değiştirmesini söyleyin.');
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

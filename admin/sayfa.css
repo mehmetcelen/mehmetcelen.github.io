@@ -1,0 +1,57 @@
+/* Look of the extra pages shown inside the admin panel (Başlangıç, Son değişiklikler, Yardım, Şifrem). */
+:root { --bg: #f6f8f7; --kart: #fff; --ink: #1c2729; --muted: #5b6a6b; --rule: #dde5e3; --accent: #1d6b64; --accent-ink: #fff; --iyi: #1d6b3f; --uyari: #8a5514; --tuy: #e8893c; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg: #1f2629; --kart: #273034; --ink: #dde4e2; --muted: #9dabaa; --rule: #36424a; --accent: #86c9bd; --accent-ink: #12201f; --iyi: #7fd3a0; --uyari: #f0b56a; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.55; }
+main { max-width: 56rem; margin: 0 auto; padding: 1.5rem max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px)); }
+h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.1rem; margin: 2rem 0 .75rem; }
+p { margin: 0 0 .8rem; }
+.alt { color: var(--muted); font-size: .95rem; }
+a { color: var(--accent); }
+.kart { background: var(--kart); border: 1px solid var(--rule); border-radius: 14px; padding: 1rem 1.15rem; }
+.dugmeler { display: grid; grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr)); gap: .75rem; }
+.dugme { display: flex; flex-direction: column; gap: .2rem; padding: 1rem 1.1rem; border-radius: 14px; background: var(--kart); border: 1px solid var(--rule); color: var(--ink); text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+.dugme:hover, .dugme:focus-visible { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 22px rgba(0, 0, 0, .1); }
+.dugme b { font-size: 1.6rem; line-height: 1.2; }
+.dugme strong { font-size: 1rem; }
+.dugme span { font-size: .82rem; color: var(--muted); }
+.dugme.ana { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.dugme.ana span { color: inherit; opacity: .85; }
+.sayilar { display: flex; flex-wrap: wrap; gap: .75rem; }
+.sayi { flex: 1 1 8rem; text-align: center; }
+.sayi b { display: block; font-size: 1.7rem; color: var(--accent); }
+.sayi span { font-size: .85rem; color: var(--muted); }
+.durum { display: flex; align-items: center; gap: .6rem; font-weight: 600; }
+.durum.iyi { color: var(--iyi); } .durum.bekle { color: var(--uyari); }
+.liste { list-style: none; margin: 0; padding: 0; }
+.liste > li { padding: .8rem 0; border-top: 1px solid var(--rule); }
+.liste > li:first-child { border-top: 0; }
+.satir { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; }
+.satir strong { flex: 1 1 14rem; min-width: 0; overflow-wrap: anywhere; }
+.satir small { color: var(--muted); }
+.kisi { display: inline-block; padding: .05rem .55rem; border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-size: .8rem; font-weight: 600; }
+button, .btn { font: inherit; font-weight: 600; padding: .45rem 1rem; border-radius: 999px; border: 1px solid var(--rule); background: var(--kart); color: var(--ink); cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.ana { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+button.kucuk { font-size: .82rem; padding: .3rem .8rem; }
+button[disabled] { opacity: .55; cursor: default; }
+.dosyalar { margin: .6rem 0 0; padding: .6rem .8rem; border-radius: 10px; background: var(--bg); font-size: .9rem; }
+.dosyalar li { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; padding: .3rem 0; }
+.dosyalar code { flex: 1 1 12rem; min-width: 0; overflow-wrap: anywhere; font-size: .85rem; }
+.not { padding: .7rem .9rem; border-radius: 10px; font-size: .92rem; margin: .8rem 0; }
+.not.iyi { background: color-mix(in srgb, var(--iyi) 14%, transparent); }
+.not.uyari { background: color-mix(in srgb, var(--uyari) 16%, transparent); }
+label { display: block; font-weight: 600; margin: .9rem 0 .3rem; }
+input[type="password"], input[type="text"], select { width: 100%; max-width: 26rem; font: inherit; padding: .6rem .7rem; border-radius: 8px; border: 1px solid var(--rule); background: var(--kart); color: var(--ink); }
+input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ipucu { border-inline-start: 4px solid var(--tuy); }
+/* The guide. */
+.kilavuz h2 { font-size: 1.25rem; margin-top: 2.25rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.kilavuz table { width: 100%; border-collapse: collapse; font-size: .95rem; display: block; overflow-x: auto; }
+.kilavuz th, .kilavuz td { text-align: start; padding: .5rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.kilavuz code { background: color-mix(in srgb, var(--accent) 12%, transparent); padding: .05rem .35rem; border-radius: 5px; font-size: .9em; }
+.kilavuz li { margin: .3rem 0; }
+.icindekiler-k { columns: 2 14rem; padding-inline-start: 1.2rem; }
+@media (prefers-reduced-motion: reduce) { .dugme { transition: none; } .dugme:hover { transform: none; } }

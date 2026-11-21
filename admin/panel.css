@@ -30,3 +30,55 @@
   .sui.grid-row, .sui.button, .hosgeldin-dugmeler a { transition: none; }
   .sui.grid-row:hover, .sui.button.primary:hover, .hosgeldin-dugmeler a:hover { transform: none; }
 }
+
+/* Small dialog of our own (footnote text). */
+.mc-pencere-arka { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 1rem;
+  background: rgba(15, 25, 27, .55); font-family: system-ui, sans-serif; }
+.mc-pencere { width: min(32rem, 100%); background: #fff; color: #1c2729; border-radius: 14px; padding: 1.25rem 1.35rem; box-shadow: 0 20px 50px rgba(0, 0, 0, .35); }
+.mc-pencere h2 { margin: 0 0 .35rem; font-size: 1.15rem; }
+.mc-pencere p { margin: 0 0 .8rem; font-size: .875rem; color: #5b6a6b; }
+.mc-pencere textarea { width: 100%; box-sizing: border-box; font: inherit; font-size: 1rem; padding: .6rem .7rem; border: 1px solid #c9d4d2; border-radius: 8px; resize: vertical; }
+.mc-pencere textarea:focus { outline: 2px solid #1d6b64; outline-offset: 1px; }
+.mc-pencere-dugmeler { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .9rem; }
+.mc-pencere button { font: inherit; font-weight: 600; padding: .5rem 1.1rem; border-radius: 999px; border: 1px solid #c9d4d2; background: #fff; color: #1c2729; cursor: pointer; }
+.mc-pencere button.ana { background: #1d6b64; border-color: #1d6b64; color: #fff; }
+@media (prefers-color-scheme: dark) {
+  .mc-pencere { background: #273034; color: #dde4e2; }
+  .mc-pencere p { color: #9dabaa; }
+  .mc-pencere textarea, .mc-pencere button { background: #1f2629; color: #dde4e2; border-color: #36424a; }
+  .mc-pencere button.ana { background: #86c9bd; border-color: #86c9bd; color: #12201f; }
+}
+
+/* Messages after a save: "Kaydedildi", "Yayında", warnings. */
+.mc-bildirim-kutu { position: fixed; z-index: 99999; inset-inline-end: 1rem; bottom: 4.25rem; display: flex; flex-direction: column; gap: .6rem; width: min(24rem, calc(100vw - 2rem)); font-family: system-ui, sans-serif; }
+.mc-bildirim { display: grid; grid-template-columns: auto 1fr auto; gap: .2rem .7rem; align-items: start; padding: .85rem 1rem; border-radius: 14px; background: #1f4743; color: #f6f7f6;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .3); animation: mc-gel .25s ease; }
+.mc-bildirim .simge { grid-row: span 2; font-size: 1.35rem; line-height: 1.2; }
+.mc-bildirim strong { font-size: .95rem; }
+.mc-bildirim .metin { grid-column: 2; font-size: .85rem; opacity: .92; line-height: 1.4; }
+.mc-bildirim .metin a { color: inherit; font-weight: 700; }
+.mc-bildirim ul { margin: .2rem 0 0; padding-inline-start: 1.1rem; }
+.mc-bildirim button { grid-column: 3; grid-row: 1; background: none; border: 0; color: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: .75; padding: .1rem .2rem; }
+.mc-bildirim.uyari { background: #7a4a12; }
+.mc-bildirim.tamam { background: #1d6b3f; }
+.mc-bildirim.bekliyor .simge { animation: mc-don 1.6s linear infinite; display: inline-block; }
+.mc-bildirim .cubuk { grid-column: 1 / -1; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, .22); overflow: hidden; margin-top: .45rem; }
+.mc-bildirim .cubuk i { display: block; height: 100%; width: 0; background: #f6f7f6; transition: width 1s linear; }
+@keyframes mc-gel { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes mc-don { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .mc-bildirim, .mc-bildirim.bekliyor .simge { animation: none; } }
+
+/* Phone: the welcome strip becomes one short line and one row of buttons that scrolls sideways;
+   messages sit above the panel's bottom bar; the footnote dialog fills the width. */
+@media (max-width: 600px) {
+  .hosgeldin { padding: .6rem .9rem .7rem; gap: .5rem; }
+  .hosgeldin-metin { flex-basis: 100%; }
+  .hosgeldin-metin strong { font-size: 1rem; }
+  .hosgeldin-metin > span { display: none; }
+  .hosgeldin-dugmeler { flex-wrap: nowrap; overflow-x: auto; width: 100%; padding-bottom: .15rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .hosgeldin-dugmeler::-webkit-scrollbar { display: none; }
+  .hosgeldin-dugmeler a { flex: none; padding: .55rem .85rem; }
+  .mc-bildirim-kutu { inset-inline: .75rem; width: auto; bottom: 4.5rem; }
+  .mc-pencere-arka { align-items: flex-end; padding: .5rem; }
+  .mc-pencere textarea { font-size: 16px; }
+}

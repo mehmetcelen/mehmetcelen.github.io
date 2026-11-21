@@ -12,7 +12,12 @@
          https://sveltiacms.app/en/docs/start#installing-with-a-cdn
          Spare door: the same panel with the GitHub sign-in (needs a GitHub account with access to the
          repository). Its config.yml is made at build time by src/pages/admin-github/config.yml.ts. -->
+    <!-- Started by hand so that panel-kayit.js (preview, footnote button, checks) is registered first.
+         https://sveltiacms.app/en/docs/api/initialization -->
+    <script>window.CMS_MANUAL_INIT = true;</script>
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+    <script src="/admin/panel-kayit.js"></script>
+    <script>window.CMS.init();</script>
     <!-- Welcome strip and small look changes: panel.css and panel.js, next to this file. -->
     <script src="/admin/panel.js"></script>
   </body>

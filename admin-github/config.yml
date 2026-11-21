@@ -76,11 +76,6 @@ collections:
       - { label: Kategori, field: category }
     fields:
       - { name: title, label: Başlık, widget: string }
-      - name: date
-        label: Tarih
-        widget: datetime
-        format: 'YYYY-MM-DDTHH:mm:ss'
-        default: '{{now}}'
       - name: category
         label: Kategori
         widget: select
@@ -91,6 +86,13 @@ collections:
           - { label: Sorular, value: sorular }
           - { label: Haberler, value: haberler }
           - { label: Videolar, value: videolar }
+      - name: body
+        label: İçerik
+        widget: richtext
+        modes: [rich_text, raw]
+        required: false
+        editor_components: [dipnot, image, table, hr]
+        hint: 'Yalnızca video paylaşıyorsanız boş bırakabilirsiniz. Dipnot için imleci yerine koyup Insert menüsünden Dipnot seçin. Word metnini doğrudan yapıştırabilirsiniz.'
       - name: summary
         label: Kısa özet
         widget: text
@@ -105,35 +107,6 @@ collections:
         widget: string
         required: false
         hint: Görseli göremeyenler için kısa bir açıklama.
-      - name: body
-        label: İçerik
-        widget: richtext
-        modes: [rich_text, raw]
-        required: false
-        editor_components: [image, table, hr]
-        hint: 'Yalnızca video paylaşıyorsanız boş bırakabilirsiniz. Dipnot eklemek için metne [^1] yazın, yazının en altına da yeni bir satıra [^1]: dipnot metni yazın.'
-      - name: attachments
-        label: Ekler (PDF)
-        label_singular: Ek
-        widget: list
-        required: false
-        summary: '{{label}}'
-        fields:
-          - { name: label, label: Dosya adı (okurun göreceği), widget: string }
-          - { name: file, label: Dosya, widget: file }
-      - name: audio
-        label: Ses kaydı (MP3 dosyası)
-        widget: file
-        required: false
-      - name: audio_embed
-        label: Ses kaydı (bağlantı)
-        widget: string
-        required: false
-        hint: SoundCloud veya archive.org adresi.
-      - name: video
-        label: Video (YouTube bağlantısı)
-        widget: string
-        required: false
       # Topic ids come from src/data/konular.json: a new topic must be added in both places.
       # https://decapcms.org/docs/widgets/#select
       - name: topics
@@ -152,6 +125,38 @@ collections:
           - { label: "Davet ve Eğitim", value: davet }
           - { label: "Şahsiyetler", value: sahsiyetler }
           - { label: "Dil ve Yazarlık", value: dil }
+      - name: date
+        label: Tarih
+        widget: datetime
+        format: 'YYYY-MM-DDTHH:mm:ss'
+        default: '{{now}}'
+        hint: Bugünün tarihi kendiliğinden yazılır. Eski bir yazıyı ekliyorsanız asıl tarihini seçin.
+      # The fields from here on are rarely needed: they stay at the end so that the form reads top to bottom.
+      - name: video
+        label: Video (YouTube bağlantısı)
+        widget: string
+        required: false
+        hint: 'Yalnızca video varsa. YouTube adresini olduğu gibi yapıştırın.'
+      - name: attachments
+        label: Ekler (PDF)
+        label_singular: Ek
+        widget: list
+        required: false
+        summary: '{{label}}'
+        hint: Okurun indirebileceği dosyalar. Gerekmiyorsa boş bırakın.
+        fields:
+          - { name: label, label: Dosya adı (okurun göreceği), widget: string }
+          - { name: file, label: Dosya, widget: file }
+      - name: audio
+        label: Ses kaydı (MP3 dosyası)
+        widget: file
+        required: false
+        hint: Yalnızca ses kaydı varsa.
+      - name: audio_embed
+        label: Ses kaydı (bağlantı)
+        widget: string
+        required: false
+        hint: SoundCloud veya archive.org adresi.
       # https://decapcms.org/docs/widgets/#list
       - name: quotes
         label: Öne çıkan cümleler
@@ -190,8 +195,7 @@ collections:
       - { name: publisher, label: Yayınevi, widget: string, required: false }
       - { name: cover, label: Kapak, widget: image, required: false }
       - { name: cover_alt, label: Kapak açıklaması, widget: string, required: false }
-      - { name: cover_source, label: Kapak kaynağı, widget: string, required: false, hint: "Kapak yüklemediyseniz, kapak görseli bu adresten kendiliğinden alınır. Boş bırakabilirsiniz." }
-      - { name: body, label: Tanıtım, widget: richtext, modes: [rich_text, raw], required: false }
+      - { name: body, label: Tanıtım, widget: richtext, modes: [rich_text, raw], required: false, editor_components: [dipnot, image, table, hr], hint: 'Kitabı bir iki paragrafla tanıtın. Boş kalabilir.' }
       - name: links
         label: Bağlantılar
         label_singular: Bağlantı
@@ -213,8 +217,6 @@ collections:
         search_fields: [title]
         required: false
         hint: Kitabı tanıtan yazı varsa buradan seçin. Kitap sayfasında yazıya bağlantı görünür.
-      - { name: pdf, label: PDF dosyası, widget: file, required: false, hint: Kitabın PDF dosyası varsa okuyucular indirebilir. }
-      - { name: epub, label: EPUB dosyası (e-kitap), widget: file, required: false, hint: Kitabın EPUB dosyası varsa okuyucular indirebilir. }
       # Topic ids come from src/data/konular.json: a new topic must be added in both places.
       # https://decapcms.org/docs/widgets/#select
       - name: topics
@@ -233,7 +235,10 @@ collections:
           - { label: "Davet ve Eğitim", value: davet }
           - { label: "Şahsiyetler", value: sahsiyetler }
           - { label: "Dil ve Yazarlık", value: dil }
-      - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
+      - { name: pdf, label: PDF dosyası, widget: file, required: false, hint: Kitabın PDF dosyası varsa okuyucular indirebilir. }
+      - { name: epub, label: EPUB dosyası (e-kitap), widget: file, required: false, hint: Kitabın EPUB dosyası varsa okuyucular indirebilir. }
+      - { name: cover_source, label: Kapak kaynağı, widget: string, required: false, hint: "Kapak yüklemediyseniz, kapak görseli bu adresten kendiliğinden alınır. Boş bırakabilirsiniz." }
+      - { name: draft, label: Taslak, widget: boolean, default: false, required: false, hint: 'Açıkken sitede görünmez.' }
 
   - name: konusmalar
     label: Konuşmalar
@@ -249,8 +254,6 @@ collections:
       - { label: Tür, field: type }
     fields:
       - { name: title, label: Konuşma başlığı, widget: string }
-      - { name: date, label: Tarih, widget: datetime, type: date, format: 'YYYY-MM-DD' }
-      - { name: exact_date, label: Gün ve ay kesin, widget: boolean, default: true, required: false, hint: 'Kapalıysa sitede yalnızca yıl görünür.' }
       - name: type
         label: Tür
         widget: select
@@ -261,18 +264,21 @@ collections:
           - { label: Sempozyum (Ulusal), value: sempozyum-ulusal }
           - { label: Sempozyum (Uluslararası), value: sempozyum-uluslararasi }
           - { label: Röportaj, value: roportaj }
+      - { name: date, label: Tarih, widget: datetime, type: date, format: 'YYYY-MM-DD' }
+      - { name: exact_date, label: Gün ve ay kesin, widget: boolean, default: true, required: false, hint: 'Kapalıysa sitede yalnızca yıl görünür.' }
       - { name: event, label: Etkinlik adı, widget: string, required: false }
       - { name: place, label: 'Yer (kurum, şehir)', widget: string, required: false }
-      - { name: body, label: Özet, widget: richtext, modes: [rich_text, raw], required: false }
+      - { name: body, label: Özet veya tam metin, widget: richtext, modes: [rich_text, raw], required: false, editor_components: [dipnot, image, table, hr], hint: 'Konuşmanın özeti ya da tam metni. Dipnot için Insert menüsünden Dipnot seçin.' }
+      - { name: video, label: Video (YouTube bağlantısı), widget: string, required: false, hint: 'YouTube adresini olduğu gibi yapıştırın.' }
       - { name: audio, label: Ses kaydı (MP3 dosyası), widget: file, required: false }
       - { name: audio_embed, label: Ses kaydı (bağlantı), widget: string, required: false }
-      - { name: video, label: Video (YouTube bağlantısı), widget: string, required: false }
       - name: attachments
         label: Ekler
         label_singular: Ek
         widget: list
         required: false
         summary: '{{label}}'
+        hint: Okurun indirebileceği dosyalar. Gerekmiyorsa boş bırakın.
         fields:
           - { name: label, label: Dosya adı (okurun göreceği), widget: string }
           - { name: file, label: Dosya, widget: file }
@@ -302,7 +308,7 @@ collections:
         required: false
         hint: Uzun yazılarda metnin içinde büyük harflerle gösterilecek cümleler (en fazla 3). Cümleyi metinden olduğu gibi kopyalayıp yapıştırın; metinde harfi harfine bulunmayan cümle gösterilmez.
         field: { name: quote, label: Cümle, widget: text }
-      - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
+      - { name: draft, label: Taslak, widget: boolean, default: false, required: false, hint: 'Açıkken sitede görünmez.' }
 
   - name: sayfalar
     label: Sayfalar

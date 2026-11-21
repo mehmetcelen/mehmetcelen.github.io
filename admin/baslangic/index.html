@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="/admin/sayfa.css" />
+<title>Başlangıç | Yönetim Paneli</title>
+</head>
+<body>
+<!-- Start page of the admin panel (registered in panel-kayit.js). Shown inside the panel. -->
+<main>
+  <h1 id="selam">Hoş geldiniz 👋</h1>
+  <p class="alt">Buradan en sık yapılan işleri tek tıkla başlatabilirsiniz.</p>
+
+  <h2>Ne yapmak istersiniz?</h2>
+  <nav class="dugmeler" aria-label="Sık yapılan işler">
+    <a class="dugme ana" target="_top" href="/admin/#/collections/yazilar/new?category=makaleler"><b>✍️</b><strong>Yeni makale</strong><span>Makale ya da uzun yazı</span></a>
+    <a class="dugme" target="_top" href="/admin/#/collections/yazilar/new?category=haberler"><b>📰</b><strong>Haber ya da duyuru</strong><span>Kısa bir haber, kitap duyurusu</span></a>
+    <a class="dugme" target="_top" href="/admin/#/collections/konusmalar/new?type=konferans"><b>🎙️</b><strong>Konuşma</strong><span>Konferans, panel, röportaj</span></a>
+    <a class="dugme" target="_top" href="/admin/#/collections/kitaplar/new"><b>📚</b><strong>Kitap</strong><span>Yeni kitap sayfası</span></a>
+    <a class="dugme" target="_top" href="/admin/#/collections/yazilar/new?category=videolar"><b>🎬</b><strong>Video</strong><span>YouTube bağlantısı paylaş</span></a>
+    <a class="dugme" target="_top" href="/admin/#/collections/yazilar"><b>🔎</b><strong>Yazıyı düzelt</strong><span>Var olan bir yazıyı aç</span></a>
+    <a class="dugme" target="_top" href="/admin/#/collections/ayarlar"><b>📣</b><strong>Ana sayfa duyurusu</strong><span>Site ayarları bölümünde</span></a>
+    <a class="dugme" target="_top" href="/admin/#/pages/yardim"><b>❓</b><strong>Yardım</strong><span>Adım adım kılavuz</span></a>
+  </nav>
+
+  <h2>Sitenin durumu</h2>
+  <div class="kart" id="durum"><p class="alt">Bakılıyor…</p></div>
+
+  <h2>Son değişiklikler</h2>
+  <div class="kart" id="son"><p class="alt">Yükleniyor…</p></div>
+  <p class="alt" style="margin-top:.6rem"><a target="_top" href="/admin/#/pages/gecmis">Bütün değişiklikleri gör ve gerekirse geri al</a></p>
+
+  <h2>Günün ipucu</h2>
+  <div class="kart ipucu" id="ipucu"></div>
+</main>
+<script src="/admin/sayfa.js"></script>
+<script>
+(function () {
+  var name = String(mc.user().name || '').trim().split(/\s+/)[0];
+  var hour = new Date().getHours();
+  var hi = hour < 6 ? 'İyi geceler' : hour < 12 ? 'Günaydın' : hour < 18 ? 'İyi günler' : 'İyi akşamlar';
+  document.getElementById('selam').textContent = hi + (name ? ', ' + name : '') + ' 👋';
+
+  var tips = [
+    'Word’den yapıştırırken bütün yazıyı (Ctrl+A) seçip kopyalayın: dipnotlar da yerlerine yerleşir.',
+    'Dipnot eklemek için imleci cümlenin sonuna koyun, içerik kutusundaki “Insert” menüsünden “Dipnot”u seçin.',
+    'Yazı henüz hazır değilse “Taslak” işaretini açık bırakın. Taslaklar sitede görünmez.',
+    'Kapak görseli yüklemezseniz site, konuya uygun çizimli bir afişi kendisi hazırlar.',
+    'Sağdaki önizleme, yazının sitede nasıl görüneceğini gösterir.',
+    'Bir şeyi yanlışlıkla bozduysanız telaş etmeyin: “Son değişiklikler” sayfasından eski haline döndürebilirsiniz.',
+    'Kaydettikten sonra sağ altta “Yayında!” yazısını bekleyin; yaklaşık 2 dakika sürer.',
+    'Uzun yazılarda “Öne çıkan cümleler” alanına metinden 1 ile 3 cümle kopyalayın; yazının içinde büyük harflerle gösterilir.',
+  ];
+  document.getElementById('ipucu').textContent = '💡 ' + tips[Math.floor(Date.now() / 86400000) % tips.length];
+
+  var durum = document.getElementById('durum'), son = document.getElementById('son');
+  // Is the newest saved version already live? /surum.json is written when the site is built.
+  Promise.all([
+    mc.gh('/commits/main', { headers: { Accept: 'application/vnd.github.sha' } }),
+    fetch('/surum.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+  ]).then(function (r) {
+    var ok = r[0].trim() === r[1].sha;
+    durum.innerHTML = ok
+      ? '<p class="durum iyi">✅ Site güncel. Kaydedilen her şey yayında.</p>'
+      : '<p class="durum bekle">⏳ Site güncelleniyor. Son kaydedilenler birkaç dakika içinde yayında olur.</p>';
+    if (r[1].built) durum.innerHTML += '<p class="alt" style="margin:0">Son yayın: ' + mc.esc(mc.ago(r[1].built)) + '</p>';
+  }).catch(function (e) { mc.fail(durum, e); });
+
+  mc.gh('/commits?per_page=6').then(function (list) {
+    son.innerHTML = '<ul class="liste">' + list.map(function (c) {
+      var i = mc.read(c);
+      return '<li><div class="satir"><strong>' + mc.esc(i.title) + '</strong>' + (i.who ? '<span class="kisi">' + mc.esc(i.who) + '</span>' : '') + '<small>' + mc.esc(mc.ago(i.when)) + '</small></div></li>';
+    }).join('') + '</ul>';
+  }).catch(function (e) { mc.fail(son, e); });
+})();
+</script>
+</body>
+</html>

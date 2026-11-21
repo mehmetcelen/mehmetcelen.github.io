@@ -41,6 +41,9 @@
           // https://sveltiacms.app/en/docs/api/initialization
           window.CMS_MANUAL_INIT = true;
           add('https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js').then(function () {
+            // Preview, footnote button, checks and extra pages: must be registered before the panel starts.
+            return add('/admin/panel-kayit.js');
+          }).then(function () {
             window.CMS.init();
             // Welcome strip and small look changes: panel.css and panel.js.
             add('/admin/panel.js');
