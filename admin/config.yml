@@ -264,7 +264,7 @@ collections:
             widget: list
             summary: '{{title}}'
             collapsed: true
-            hint: Ana sayfanın en üstünde sırayla dönen geniş bant. 3 veya 4 duyuru en iyisidir. Her duyuru 3 saniye görünür.
+            hint: Ana sayfanın en üstünde sırayla dönen geniş bant. 3 veya 4 duyuru en iyisidir. Her duyuru 5 saniye görünür.
             fields:
               - { name: label, label: Küçük üst yazı, widget: string, required: false, hint: 'Örnek: Haberler, Yeni kitap' }
               - { name: title, label: Başlık, widget: string }
