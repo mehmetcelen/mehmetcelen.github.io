@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sorular | Mehmet Çelen</title><meta name="description" content="Mehmet Çelen'in yayınları, makaleleri, videoları..."><meta name="robots" content="noindex, nofollow"><meta name="color-scheme" content="light dark"><script>
+      // Theme: follows the system until the reader chooses. Runs before paint to avoid a flash.
+      try {
+        var t = localStorage.getItem('tema');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script><link rel="stylesheet" href="/_astro/Base.CuYYqYlh.css"></head><body><a class="skip" href="#icerik">İçeriğe geç</a><header class="site-head"><div class="wrap"><a class="marka" href="/"><b>Mehmet Çelen</b><span>Mehmet Çelen&#39;in yayınları, makaleleri, videoları...</span></a><button class="tema" id="tema" type="button" aria-label="Açık ve koyu tema arasında geçiş yap" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path></svg><span id="tema-yazi">Koyu tema</span></button></div></header><nav class="menu" id="menu" aria-label="Ana menü"><div class="wrap"><button class="menu-dugme" id="menu-dugme" type="button" aria-expanded="false" aria-controls="menu-liste" hidden>☰ Menü</button><ul id="menu-liste"><li><a href="/">Ana Sayfa</a></li><li><a href="/hakkinda/">Hakkında</a></li><li><a href="/makaleler/" class="ok">Makaleler</a><ul><li><a href="/makaleler/pdfler/">PDF&#39;ler</a></li></ul></li><li><a href="/kitaplar/">Kitaplar</a></li><li><a href="/egitim/" class="ok" aria-current="page">Eğitim</a><ul><li><a href="/egitim/sorular/">Sorular</a></li></ul></li><li><a href="/konusmalar/" class="ok">Konuşmalar</a><ul><li><a href="/konusmalar/konferanslar/">Konferanslar</a></li><li><a href="/konusmalar/seminerler/">Seminerler</a></li><li><a href="/konusmalar/paneller/">Paneller</a></li><li><a href="/konusmalar/sempozyumlar/">Sempozyumlar</a><ul><li><a href="/konusmalar/sempozyumlar/ulusal/">Ulusal</a></li><li><a href="/konusmalar/sempozyumlar/uluslararasi/">Uluslararası</a></li></ul></li><li><a href="/konusmalar/roportajlar/">Röportajlar</a></li></ul></li><li><a href="/videolar/">Videolar</a></li><li><a href="/haberler/">Haberler</a></li><li><a href="/iletisim/">İletişim</a></li></ul></div></nav><main id="icerik"><div class="wrap"><div class="sayfa-genis"><h1>Sorular</h1></div><div class="bos"><div class="bos-not"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M33 7l8 8L18 38l-10 2 2-10L33 7Z"></path><path d="M28 12l8 8"></path><path d="M8 44h32"></path></svg><p>Bu sayfa üretim aşamasındadır</p><small>İçerik eklendiğinde burada yayımlanacaktır.</small></div></div></div></main><footer class="alt-bilgi"><div class="wrap"><span>© Mehmet Çelen</span><span>mehmetcelen.com</span></div></footer><script>
+      // The only JavaScript on the site: theme switch and the phone menu. Reading works without it.
+      (function () {
+        var root = document.documentElement, btn = document.getElementById('tema'), txt = document.getElementById('tema-yazi');
+        var mq = matchMedia('(prefers-color-scheme: dark)');
+        function isDark() { var t = root.getAttribute('data-theme'); return t ? t === 'dark' : mq.matches; }
+        function label() { txt.textContent = isDark() ? 'Açık tema' : 'Koyu tema'; }
+        btn.hidden = false; label();
+        btn.addEventListener('click', function () {
+          var n = isDark() ? 'light' : 'dark';
+          root.setAttribute('data-theme', n);
+          try { localStorage.setItem('tema', n); } catch (e) {}
+          label();
+        });
+        mq.addEventListener('change', label);
+        var menu = document.getElementById('menu'), md = document.getElementById('menu-dugme');
+        md.hidden = false; menu.classList.add('js');
+        md.addEventListener('click', function () {
+          var open = menu.classList.toggle('acik');
+          md.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      })();
+    </script></body></html>
