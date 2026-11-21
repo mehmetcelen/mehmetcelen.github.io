@@ -1,0 +1,32 @@
+/* Friendlier look for the admin panel. Sveltia CMS draws the panel, this file only adds on top:
+   the welcome strip (panel.js), the site's teal color, soft hover effects.
+   If a Sveltia update changes its class names, the worst case is that an effect disappears. */
+:root { --sui-base-hue: 174; }
+
+.hosgeldin { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; padding: .9rem 1.25rem;
+  background: linear-gradient(120deg, #1f4743, #2f6a63 55%, #35588a); color: #f6f7f6; font-family: system-ui, sans-serif; }
+.hosgeldin[hidden] { display: none; }
+.hosgeldin-metin { flex: 1 1 16rem; min-width: 0; }
+.hosgeldin-metin strong { display: block; font-size: 1.15rem; font-weight: 650; }
+.hosgeldin-metin span { font-size: .875rem; opacity: .9; }
+.hosgeldin-el { display: inline-block; transform-origin: 70% 70%; animation: selam 1.8s ease-in-out 1; }
+.hosgeldin-dugmeler { display: flex; flex-wrap: wrap; gap: .5rem; }
+.hosgeldin-dugmeler a { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .9rem; border-radius: 999px;
+  background: rgba(255, 255, 255, .14); color: inherit; text-decoration: none; font-size: .875rem; font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, .25); transition: transform .15s ease, background-color .15s ease; }
+.hosgeldin-dugmeler a:hover, .hosgeldin-dugmeler a:focus-visible { background: rgba(255, 255, 255, .26); transform: translateY(-2px); }
+.hosgeldin-dugmeler a.ana { background: #f6f7f6; color: #1f4743; border-color: transparent; }
+.hosgeldin-dugmeler a.ana:hover { background: #fff; }
+@keyframes selam { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(18deg); } 40% { transform: rotate(-10deg); } 60% { transform: rotate(14deg); } 80% { transform: rotate(-4deg); } }
+
+/* Soft movement on rows and buttons. */
+.sui.grid-row { transition: background-color .15s ease, transform .15s ease; }
+.sui.grid-row:hover { transform: translateX(3px); }
+.sui.button { transition: background-color .15s ease, transform .12s ease, box-shadow .15s ease; }
+.sui.button.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(31, 71, 67, .3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hosgeldin-el { animation: none; }
+  .sui.grid-row, .sui.button, .hosgeldin-dugmeler a { transition: none; }
+  .sui.grid-row:hover, .sui.button.primary:hover, .hosgeldin-dugmeler a:hover { transform: none; }
+}

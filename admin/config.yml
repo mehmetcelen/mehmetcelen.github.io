@@ -164,7 +164,18 @@ collections:
         fields:
           - { name: label, label: Yazı, widget: string }
           - { name: url, label: Adres, widget: string }
-      - { name: pdf, label: PDF, widget: file, required: false }
+      # https://sveltiacms.app/en/docs/fields/relation
+      - name: intro
+        label: Tanıtım yazısı
+        widget: relation
+        collection: yazilar
+        value_field: '{{slug}}'
+        display_fields: ['{{title}}']
+        search_fields: [title]
+        required: false
+        hint: Kitabı tanıtan yazı varsa buradan seçin. Kitap sayfasında yazıya bağlantı görünür.
+      - { name: pdf, label: PDF dosyası, widget: file, required: false, hint: Kitabın PDF dosyası varsa okuyucular indirebilir. }
+      - { name: epub, label: EPUB dosyası (e-kitap), widget: file, required: false, hint: Kitabın EPUB dosyası varsa okuyucular indirebilir. }
       - { name: draft, label: Taslak, widget: boolean, default: false, required: false }
 
   - name: konusmalar
