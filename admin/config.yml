@@ -199,6 +199,7 @@ collections:
     fields:
       - { name: title, label: Konuşma başlığı, widget: string }
       - { name: date, label: Tarih, widget: datetime, type: date, format: 'YYYY-MM-DD' }
+      - { name: exact_date, label: Gün ve ay kesin, widget: boolean, default: true, required: false, hint: 'Kapalıysa sitede yalnızca yıl görünür.' }
       - name: type
         label: Tür
         widget: select
