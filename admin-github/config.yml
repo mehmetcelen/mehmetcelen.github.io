@@ -92,7 +92,7 @@ collections:
         modes: [rich_text, raw]
         required: false
         editor_components: [dipnot, image, table, hr]
-        hint: 'Yalnızca video paylaşıyorsanız boş bırakabilirsiniz. Dipnot için imleci yerine koyup Insert menüsünden Dipnot seçin. Word metnini doğrudan yapıştırabilirsiniz.'
+        hint: 'Yalnızca video paylaşıyorsanız boş bırakabilirsiniz. Dipnot için imleci yerine koyup "Ekle" menüsünden Dipnot seçin. Word metnini doğrudan yapıştırabilirsiniz.'
       - name: summary
         label: Kısa özet
         widget: text
@@ -268,7 +268,7 @@ collections:
       - { name: exact_date, label: Gün ve ay kesin, widget: boolean, default: true, required: false, hint: 'Kapalıysa sitede yalnızca yıl görünür.' }
       - { name: event, label: Etkinlik adı, widget: string, required: false }
       - { name: place, label: 'Yer (kurum, şehir)', widget: string, required: false }
-      - { name: body, label: Özet veya tam metin, widget: richtext, modes: [rich_text, raw], required: false, editor_components: [dipnot, image, table, hr], hint: 'Konuşmanın özeti ya da tam metni. Dipnot için Insert menüsünden Dipnot seçin.' }
+      - { name: body, label: Özet veya tam metin, widget: richtext, modes: [rich_text, raw], required: false, editor_components: [dipnot, image, table, hr], hint: 'Konuşmanın özeti ya da tam metni. Dipnot için "Ekle" menüsünden Dipnot seçin.' }
       - { name: video, label: Video (YouTube bağlantısı), widget: string, required: false, hint: 'YouTube adresini olduğu gibi yapıştırın.' }
       - { name: audio, label: Ses kaydı (MP3 dosyası), widget: file, required: false }
       - { name: audio_embed, label: Ses kaydı (bağlantı), widget: string, required: false }

@@ -39,6 +39,13 @@
           // https://sveltiacms.app/en/docs/start#installing-with-a-cdn
           // The script is added after the page has loaded, so the panel is started by hand.
           // https://sveltiacms.app/en/docs/api/initialization
+          // The panel speaks the browser's language unless the editor chose one in its settings.
+          // Our editors get Turkish whatever their browser says; a language chosen by hand is kept.
+          // (Sveltia keeps its settings in localStorage under sveltia-cms.prefs, field "locale".)
+          try {
+            var prefs = JSON.parse(localStorage.getItem('sveltia-cms.prefs') || '{}') || {};
+            if (!prefs.locale || prefs.locale === 'auto') { prefs.locale = 'tr'; localStorage.setItem('sveltia-cms.prefs', JSON.stringify(prefs)); }
+          } catch (e) {}
           window.CMS_MANUAL_INIT = true;
           add('https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js').then(function () {
             // Preview, footnote button, checks and extra pages: must be registered before the panel starts.
