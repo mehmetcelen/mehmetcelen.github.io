@@ -336,13 +336,6 @@ collections:
         fields:
           - { name: title, label: Başlık, widget: string }
           - { name: body, label: İçerik, widget: richtext, modes: [rich_text, raw] }
-      - name: pdfler
-        label: "PDF'ler (sayfanın giriş yazısı)"
-        file: src/content/sayfalar/makaleler/pdfler.md
-        preview_path: makaleler/pdfler/
-        fields:
-          - { name: title, label: Başlık, widget: string }
-          - { name: body, label: İçerik, widget: richtext, modes: [rich_text, raw], required: false }
 
   - name: ayarlar
     label: Site ayarları
