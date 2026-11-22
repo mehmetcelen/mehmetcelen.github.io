@@ -68,7 +68,10 @@
     if (r[1].built) durum.innerHTML += '<p class="alt" style="margin:0">Son yayın: ' + mc.esc(mc.ago(r[1].built)) + '</p>';
   }).catch(function (e) { mc.fail(durum, e); });
 
-  mc.gh('/commits?per_page=6').then(function (list) {
+  // Only what the editors changed; technical work on the site is left out here.
+  mc.gh('/commits?per_page=40').then(function (list) {
+    list = list.filter(function (c) { return mc.read(c).editorial; }).slice(0, 6);
+    if (!list.length) { son.innerHTML = '<p class="alt">Son günlerde içerik değişikliği yok.</p>'; return; }
     son.innerHTML = '<ul class="liste">' + list.map(function (c) {
       var i = mc.read(c);
       return '<li><div class="satir"><strong>' + mc.esc(i.title) + '</strong>' + (i.who ? '<span class="kisi">' + mc.esc(i.who) + '</span>' : '') + '<small>' + mc.esc(mc.ago(i.when)) + '</small></div></li>';

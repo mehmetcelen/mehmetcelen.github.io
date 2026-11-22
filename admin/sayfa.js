@@ -34,7 +34,21 @@
     read: function (commit) {
       var lines = String(commit.commit.message || '').split('\n');
       var who = (String(commit.commit.message).match(/Editör:\s*([^(\n]+)/) || [])[1];
-      return { title: lines[0], who: who ? who.trim() : commit.commit.author && /bot|\[bot\]/i.test(commit.commit.author.name) ? 'Otomatik' : (commit.commit.author || {}).name || '', when: (commit.commit.author || {}).date };
+      // Changes made by the editors in the panel start with one of these words (commit_messages in
+      // config.yml, and the restore button). Everything else is technical work on the site.
+      var editorial = /^(İçerik:|Dosya |Geri alma:)/.test(lines[0]);
+      return { editorial: editorial, title: lines[0], who: who ? who.trim() : commit.commit.author && /bot|\[bot\]/i.test(commit.commit.author.name) ? 'Otomatik' : (commit.commit.author || {}).name || '', when: (commit.commit.author || {}).date };
+    },
+    // The list for the editors: their own changes one by one, technical ones in between folded into one quiet line.
+    group: function (commits) {
+      var out = [];
+      commits.forEach(function (c) {
+        var info = mc.read(c), last = out[out.length - 1];
+        if (info.editorial) out.push({ commit: c, info: info });
+        else if (last && last.technical) last.technical += 1;
+        else out.push({ technical: 1, when: info.when });
+      });
+      return out;
     },
     fail: function (el, error) {
       el.innerHTML = String(error && error.message) === 'oturum'

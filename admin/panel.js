@@ -117,12 +117,27 @@
   function live() {
     return fetch('/surum.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { return j.sha || ''; }).catch(function () { return ''; });
   }
+  // Texts that also exist in English or Arabic: those versions are written by hand and do not follow
+  // a change in the Turkish text. Said once per text and session, not on every save.
+  var translated = null, told = {};
+  function translations(d) {
+    var id = d.collection + '/' + d.slug;
+    if (!d.slug || told[id]) return;
+    (translated || (translated = fetch('/admin/ceviriler.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }))).then(function (list) {
+      var langs = list[id];
+      if (!langs || !langs.length || told[id]) return;
+      told[id] = true;
+      var names = langs.map(function (l) { return { en: 'İngilizce', ar: 'Arapça' }[l] || l; }).join(' ve ');
+      bildir('uyari', '🌍', 'Bu yazının ' + names + ' çevirisi var', 'Çeviriler kendiliğinden değişmez. Metinde anlamı değiştiren bir düzeltme yaptıysanız Agah’a haber verin, çeviri de güncellensin. Küçük yazım düzeltmeleri için gerek yok.', 25000);
+    });
+  }
   var PATHS = { yazilar: '/yazilar/', konusmalar: '/konusma/', kitaplar: '/kitaplar/', sayfalar: '/' };
   var watch = 0;
 
   window.addEventListener('mc-kaydedildi', function (event) {
     var d = event.detail || {}, mine = ++watch;
     box.querySelectorAll('.mc-bildirim.bekliyor').forEach(function (el) { el.remove(); });
+    translations(d);
     if (d.draft) { bildir('tamam', '📝', 'Taslak kaydedildi', 'Taslaklar sitede görünmez. Hazır olunca "Taslak" işaretini kaldırıp yeniden kaydedin.', 12000); return; }
     var wait = bildir('bekliyor', '⏳', 'Kaydedildi! Site güncelleniyor…', 'Yaklaşık 2 dakika sürer. Bu pencereyi kapatmadan çalışmaya devam edebilirsiniz.<div class="cubuk"><i></i></div>');
     var bar = wait.querySelector('.cubuk i'), started = Date.now(), LIMIT = 8 * 60 * 1000;

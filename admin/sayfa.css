@@ -55,3 +55,6 @@ input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible
 .kilavuz li { margin: .3rem 0; }
 .icindekiler-k { columns: 2 14rem; padding-inline-start: 1.2rem; }
 @media (prefers-reduced-motion: reduce) { .dugme { transition: none; } .dugme:hover { transform: none; } }
+
+/* Technical changes in the history: one quiet line. */
+.liste > li.teknik { padding: .45rem 0; opacity: .7; }

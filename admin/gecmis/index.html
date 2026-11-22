@@ -12,7 +12,7 @@
      Restoring never deletes history: it saves the older text again as a new change. -->
 <main>
   <h1>Son değişiklikler</h1>
-  <p class="alt">Kim, ne zaman, neyi değiştirdi. Bir değişiklik yanlış olduysa “Dosyaları göster” deyip o dosyayı önceki haline döndürebilirsiniz. Geri alma da buraya yeni bir satır olarak yazılır, hiçbir şey kaybolmaz.</p>
+  <p class="alt">Kim, ne zaman, neyi değiştirdi. Bir değişiklik yanlış olduysa “Dosyaları göster” deyip o dosyayı önceki haline döndürebilirsiniz. Silinen bir yazıyı da aynı yerden “Geri getir” ile geri alabilirsiniz. Geri alma da buraya yeni bir satır olarak yazılır, hiçbir şey kaybolmaz. “Site geliştirmesi” satırları sitenin teknik bakımıdır, sizin yazılarınıza dokunmaz.</p>
   <div id="mesaj"></div>
   <div class="kart" id="liste"><p class="alt">Yükleniyor…</p></div>
   <p style="margin-top:1rem"><button type="button" id="daha" hidden>Daha eskileri göster</button></p>
@@ -28,8 +28,15 @@
   function load() {
     mc.gh('/commits?per_page=20&page=' + page).then(function (list) {
       if (!ul) { box.innerHTML = '<ul class="liste"></ul>'; ul = box.firstChild; }
-      list.forEach(function (c) {
-        var i = mc.read(c), li = document.createElement('li');
+      mc.group(list).forEach(function (g) {
+        var li = document.createElement('li');
+        if (g.technical) {
+          li.className = 'teknik';
+          li.innerHTML = '<small>🔧 Site geliştirmesi' + (g.technical > 1 ? ' (' + g.technical + ' teknik değişiklik)' : '') + ' · ' + mc.esc(mc.ago(g.when)) + '</small>';
+          ul.appendChild(li);
+          return;
+        }
+        var c = g.commit, i = g.info;
         li.innerHTML = '<div class="satir"><strong>' + mc.esc(i.title) + '</strong>' + (i.who ? '<span class="kisi">' + mc.esc(i.who) + '</span>' : '') +
           '<small>' + mc.esc(mc.ago(i.when)) + '</small><button type="button" class="kucuk">Dosyaları göster</button></div>';
         li.querySelector('button').addEventListener('click', function () { files(c, li, this); });
