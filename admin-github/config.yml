@@ -83,7 +83,6 @@ collections:
         options:
           - { label: Makaleler, value: makaleler }
           - { label: Eğitim, value: egitim }
-          - { label: Sorular, value: sorular }
           - { label: Haberler, value: haberler }
           - { label: Videolar, value: videolar }
       - name: body
