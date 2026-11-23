@@ -358,23 +358,23 @@ collections:
             widget: list
             summary: '{{title}}'
             collapsed: true
-            hint: Ana sayfanın en üstünde sırayla dönen geniş bant. 3 veya 4 duyuru en iyisidir. Her duyuru 5 saniye görünür.
+            hint: Ana sayfanın en üstünde, tanıtımdan sonra sırayla dönen bölüm ve yanındaki Duyurular listesi. Listedeki ilk 5 duyuru görünür, sırayı sürükleyerek değiştirebilirsiniz. Her duyuru 5 saniye görünür.
             fields:
               - name: kind
                 label: Duyuru türü
                 widget: select
                 default: normal
                 required: false
-                hint: '"Son videolar" seçilirse görsel yerine en yeni 3 video küçük resimleriyle görünür.'
+                hint: '"Son videolar" seçilirse görsel yerine en yeni videolar küçük resimleriyle görünür.'
                 options:
                   - { label: Normal (tek görsel), value: normal }
-                  - { label: Son videolar (3 video), value: videolar }
+                  - { label: Son videolar (en yeni videolar), value: videolar }
               - { name: label, label: Küçük üst yazı, widget: string, required: false, hint: 'Örnek: Haberler, Yeni kitap' }
               - { name: title, label: Başlık, widget: string }
               - { name: text, label: Kısa açıklama, widget: text, required: false, hint: Bir iki cümle yeter. }
               - { name: link, label: Tıklanınca açılacak adres, widget: string, required: false, hint: 'Site içi adres, örnek: /kitaplar/' }
               - { name: button, label: Düğme yazısı, widget: string, required: false, hint: 'Boş kalırsa "Devamını oku" yazar.' }
-              - { name: image, label: Görsel, widget: image, required: false }
+              - { name: image, label: Görsel, widget: image, required: false, hint: 'Üzerinde yazı olmayan bir görsel seçin, başlık zaten yanında yazar. Boş kalırsa konuya göre bir çizim görünür. Kitap haberlerinde kitabın kapağı kendiliğinden gelir.' }
               - name: color
                 label: Renk
                 widget: select
