@@ -321,6 +321,11 @@
           document.querySelectorAll('.kart,.bolum-bas,.tanit,.video-kutu,.pdf-kutu,.sayilar a,.ozgecmis .bolum').forEach(function (el) {
             if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('gizli'); io.observe(el); }
           });
+          // Line drawings inside a text draw themselves once, when a third of the drawing is on screen.
+          var ciz = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('cizildi'); ciz.unobserve(x.target); } }); }, { threshold: 0.35 });
+          document.querySelectorAll('.cizim').forEach(function (el) {
+            if (el.getBoundingClientRect().top > innerHeight * 0.8) { el.classList.add('bekler'); ciz.observe(el); }
+          });
         }
         // The language list closes on a click elsewhere or on Escape.
         var dil = document.querySelector('details.dil');

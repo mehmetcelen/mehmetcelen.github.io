@@ -124,6 +124,7 @@ collections:
           - { label: "Davet ve Eğitim", value: davet }
           - { label: "Şahsiyetler", value: sahsiyetler }
           - { label: "Dil ve Yazarlık", value: dil }
+          - { label: "Ziyaret Notları", value: ziyaret-notlari }
       - name: date
         label: Tarih
         widget: datetime
@@ -234,6 +235,7 @@ collections:
           - { label: "Davet ve Eğitim", value: davet }
           - { label: "Şahsiyetler", value: sahsiyetler }
           - { label: "Dil ve Yazarlık", value: dil }
+          - { label: "Ziyaret Notları", value: ziyaret-notlari }
       - { name: pdf, label: PDF dosyası, widget: file, required: false, hint: Kitabın PDF dosyası varsa okuyucular indirebilir. }
       - { name: epub, label: EPUB dosyası (e-kitap), widget: file, required: false, hint: Kitabın EPUB dosyası varsa okuyucular indirebilir. }
       - { name: cover_source, label: Kapak kaynağı, widget: string, required: false, hint: "Kapak yüklemediyseniz, kapak görseli bu adresten kendiliğinden alınır. Boş bırakabilirsiniz." }
@@ -299,6 +301,7 @@ collections:
           - { label: "Davet ve Eğitim", value: davet }
           - { label: "Şahsiyetler", value: sahsiyetler }
           - { label: "Dil ve Yazarlık", value: dil }
+          - { label: "Ziyaret Notları", value: ziyaret-notlari }
       # https://decapcms.org/docs/widgets/#list
       - name: quotes
         label: Öne çıkan cümleler
