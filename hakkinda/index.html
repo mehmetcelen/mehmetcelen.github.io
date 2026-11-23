@@ -158,10 +158,10 @@ Malatya İmam Hatip Lisesi’nden 1978 yılında iyi dereceyle mezun oldu.</p>
           });
         });
         // Back to top button and, on pages with a long text, the reading progress line.
-        var up = document.querySelector('.yukari'), line = document.querySelector('.okuma-cizgi'), text = document.querySelector('.makale .icerik');
+        // (The line is switched on in first() below, where the length of the text is asked.)
+        var up = document.querySelector('.yukari'), lineEl = document.querySelector('.okuma-cizgi'), line = null, text = document.querySelector('.makale .icerik');
         var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
         up.addEventListener('click', function () { scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }); });
-        if (text && text.offsetHeight > innerHeight) line.hidden = false; else line = null;
         // "Aa": three text sizes for the article text, remembered in this browser only.
         document.querySelectorAll('[data-yazi-boyu]').forEach(function (b) {
           b.hidden = false;
@@ -220,7 +220,7 @@ Malatya İmam Hatip Lisesi’nden 1978 yılında iyi dereceyle mezun oldu.</p>
           });
         }
         var wait = false;
-        var lastY = scrollY;
+        var lastY = 0;
         function onScroll() {
           wait = false;
           // The bottom bar slides away while reading down and comes back on the way up.
@@ -239,7 +239,6 @@ Malatya İmam Hatip Lisesi’nden 1978 yılında iyi dereceyle mezun oldu.</p>
           }
         }
         addEventListener('scroll', function () { if (!wait) { wait = true; requestAnimationFrame(onScroll); } }, { passive: true });
-        onScroll();
         // Footnotes: a tap on the small number shows the note in a bubble; a second tap follows the link.
         var bubble;
         function closeNote() { if (bubble) { bubble.remove(); bubble = null; } }
@@ -264,17 +263,31 @@ Malatya İmam Hatip Lisesi’nden 1978 yılında iyi dereceyle mezun oldu.</p>
         });
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNote(); });
         // Cards and section heads fade in the first time they scroll into view.
-        if ('IntersectionObserver' in window && !calm) {
+        function reveal() {
+          if (!('IntersectionObserver' in window) || calm) return;
           var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('gorundu'); io.unobserve(x.target); } }); }, { rootMargin: '0px 0px -6% 0px' });
-          document.querySelectorAll('.kart,.bolum-bas,.tanit,.video-kutu,.pdf-kutu,.sayilar a,.ozgecmis .bolum').forEach(function (el) {
-            if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('gizli'); io.observe(el); }
-          });
           // Line drawings inside a text draw themselves once, when a third of the drawing is on screen.
           var ciz = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('cizildi'); ciz.unobserve(x.target); } }); }, { threshold: 0.35 });
-          document.querySelectorAll('.cizim').forEach(function (el) {
-            if (el.getBoundingClientRect().top > innerHeight * 0.8) { el.classList.add('bekler'); ciz.observe(el); }
-          });
+          // What lies below the screen (for a drawing: below four fifths of it). Every place is read
+          // first and the classes are set after: a class set between two readings would make the
+          // browser work the page out again for the next one.
+          function below(what, part) { return [].filter.call(document.querySelectorAll(what), function (el) { return el.getBoundingClientRect().top > innerHeight * part; }); }
+          var fade = below('.kart,.bolum-bas,.tanit,.video-kutu,.pdf-kutu,.sayilar a,.ozgecmis .bolum', 1), draw = below('.cizim', 0.8);
+          fade.forEach(function (el) { el.classList.add('gizli'); io.observe(el); });
+          draw.forEach(function (el) { el.classList.add('bekler'); ciz.observe(el); });
         }
+        // Everything that needs the measures of the page (is the text longer than the screen, how far
+        // is the page scrolled, what lies below the screen) is asked once the browser has laid the
+        // page out by itself: an observer is called right after that, still before the page is drawn.
+        // Asked here, while the page is being read in, each question would make the browser lay the
+        // page out on the spot ("Forced reflow" in a PageSpeed report).
+        function first() {
+          if (text && text.offsetHeight > innerHeight) { line = lineEl; line.hidden = false; }
+          lastY = scrollY;
+          onScroll();
+          reveal();
+        }
+        if ('ResizeObserver' in window) { var ro = new ResizeObserver(function () { ro.disconnect(); first(); }); ro.observe(root); } else first();
         // The language list closes on a click elsewhere or on Escape.
         var dil = document.querySelector('details.dil');
         document.addEventListener('click', function (e) { if (dil.open && !dil.contains(e.target)) dil.open = false; });
