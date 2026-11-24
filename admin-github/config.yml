@@ -23,7 +23,7 @@ backend:
     deleteMedia: 'Dosya silindi: {{path}}'
 
 app_title: Mehmet Çelen Yönetim Paneli
-site_url: https://mehmetcelen.github.io
+site_url: https://mehmetcelen.com
 publish_mode: simple
 
 # Uploaded files. https://sveltiacms.app/en/docs/media
