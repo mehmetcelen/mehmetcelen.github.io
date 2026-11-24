@@ -12,8 +12,8 @@ backend:
   # Sign-in (base_url) and every GitHub call (api_root) go through our own login Worker, which holds
   # the GitHub App's key. Code and notes: workers/cms-login/. The same address is in index.html.
   # https://sveltiacms.app/en/docs/backends/github
-  base_url: https://mehmetcelen-cms-login.corporate-translator.workers.dev
-  api_root: https://mehmetcelen-cms-login.corporate-translator.workers.dev
+  base_url: https://giris.mehmetcelen.com
+  api_root: https://giris.mehmetcelen.com
   # No access token field on Sveltia's own sign-in screen.
   auth_methods: [oauth]
   commit_messages:

@@ -106,7 +106,7 @@
 
   // Where the panel reaches GitHub: through our login Worker, or directly on the spare /admin-github/ door.
   var direct = location.pathname.indexOf('/admin-github') === 0;
-  var API = direct ? 'https://api.github.com' : 'https://mehmetcelen-cms-login.corporate-translator.workers.dev/api/v3';
+  var API = direct ? 'https://api.github.com' : 'https://giris.mehmetcelen.com/api/v3';
   var REPO = 'mehmetcelen/mehmetcelen-source';
   function token() { try { return (JSON.parse(localStorage.getItem('sveltia-cms.user') || 'null') || {}).token || ''; } catch (e) { return ''; } }
   // The newest commit on main, as plain text. https://docs.github.com/en/rest/commits/commits#get-a-commit

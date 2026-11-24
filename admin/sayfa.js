@@ -3,7 +3,7 @@
 (function () {
   var direct = false;
   try { direct = top.location.pathname.indexOf('/admin-github') === 0; } catch (e) {}
-  var LOGIN = 'https://mehmetcelen-cms-login.corporate-translator.workers.dev';
+  var LOGIN = 'https://giris.mehmetcelen.com';
   var mc = (window.mc = {
     LOGIN: LOGIN,
     REPO: 'mehmetcelen/mehmetcelen-source',
